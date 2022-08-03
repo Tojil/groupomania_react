@@ -5,8 +5,8 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1> Groupomania </h1>
-        <h2>Soyez le bienvenue</h2>
+        <h1>Groupomania</h1>
+        <h2>Soyez le Bienvenue !</h2>
         <img src={logo} className="App-logo" alt="logo" />
         <a
           className="App-link"

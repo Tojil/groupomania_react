@@ -20,12 +20,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(20px + 2vmin); 
+  font-size: calc(20px + 2vmin);
   color: #4e5166;
-}  
+}
 
 .App-link {
-  color: #4e5166;
+  color: #4E5166;
 }
 
 @keyframes App-logo-spin {
