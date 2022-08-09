@@ -14,9 +14,7 @@ module.exports = (req, res, next) => {
     } else {
       next()
     }
-  } catch {
-    res.status(401).json({
-      error: new Error('Invalid request!'),
-    })
+  } catch (error) {
+    console.log(error.message)
   }
 }

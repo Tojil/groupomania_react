@@ -1,11 +1,9 @@
-const app = require('../app')
-const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken') //jwt permet l'échange sécurisé de jetons (tokens)
-const PostsModels = require('../Models/PostsModels.js')
+const PostModels = require('../models/PostModels')
 const fs = require('fs')
 const userModels = require('../models/UserModels')
 
-let postsModels = new PostsModels()
+let postsModels = new PostModels()
 
 // Appel tous les posts(publications)
 exports.getAllPosts = (req, res, next) => {
@@ -24,6 +22,31 @@ exports.createPost = (req, res, next) => {
   postsModels.createPost(sqlInserts).then((response) => {
     res.status(201).json(JSON.stringify(response))
   })
+}
+
+// Création d'un post (une publication)
+exports.createPost = (req, res, next) => {
+  const postObject = JSON.parse(req.body.post)
+  delete postObject._id
+  const post = new PostModels({
+    // Creation d'une nouvelle instance du modèle Sauce
+    ...postObject,
+    imageUrl: `${req.protocol}://${req.get('host')}/images/${
+      req.file.filename
+    }`, // Génère url de l'image
+    title: '',
+    content: '',
+    likes: 0,
+    dislikes: 0,
+    usersLiked: '',
+    usersDisliked: '',
+  })
+  post
+    .save() // Enregistre dans la db l'objet et renvoie une promesse
+    .then(() =>
+      res.status(201).json({ message: 'Nouvelle sauce enregistrée !' })
+    )
+    .catch((error) => res.status(400).json({ error }))
 }
 // Met a jour un post(publication)
 exports.updatePost = (req, res, next) => {
