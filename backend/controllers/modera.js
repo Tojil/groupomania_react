@@ -53,7 +53,7 @@ exports.deletePost = (req, res, next) => {
   const token = req.headers.authorization.split(' ')[1]
   const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET')
   const mod = decodedToken.moderation
-  if (mod == 1) {
+  if (mod === 1) {
     let postId = req.params.id
     let sqlInserts = [postId]
     moderaModels.deletePost(sqlInserts).then((response) => {

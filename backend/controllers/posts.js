@@ -12,24 +12,24 @@ exports.getAllPosts = (req, res, next) => {
   })
 }
 
-// Création d'un post (une publication)
-exports.createPost = (req, res, next) => {
-  let title = req.body.title
-  let userId = req.body.userId
-  let content = req.body.content
-  let image = req.file.path
-  let sqlInserts = [userId, title, content, image]
-  postsModels.createPost(sqlInserts).then((response) => {
-    res.status(201).json(JSON.stringify(response))
-  })
-}
+// // Création d'un post (une publication)
+// exports.createPost = (req, res, next) => {
+//   let title = req.body.title
+//   let userId = req.body.userId
+//   let content = req.body.content
+//   let image = req.file.path
+//   let sqlInserts = [userId, title, content, image]
+//   postsModels.createPost(sqlInserts).then((response) => {
+//     res.status(201).json(JSON.stringify(response))
+//   })
+// }
 
 // Création d'un post (une publication)
 exports.createPost = (req, res, next) => {
   const postObject = JSON.parse(req.body.post)
   delete postObject._id
   const post = new PostModels({
-    // Creation d'une nouvelle instance du modèle Sauce
+    // Creation d'une nouvelle instance du modèle PostModels
     ...postObject,
     imageUrl: `${req.protocol}://${req.get('host')}/images/${
       req.file.filename
