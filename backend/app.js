@@ -1,20 +1,10 @@
 const express = require('express')
-const mongoose = require('mongoose')
 const { join } = require('path')
-require('dotenv').config()
 const routesModera = require('./routes/routesModera')
 const routesPosts = require('./routes/routesPosts')
 const routesUsers = require('./routes/routesUsers')
-
-// Connection à Mongoose
-mongoose
-  .connect(process.env.SERVER_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log('Conexion à MongoDB réussi !'))
-  .catch(() => console.log('connexion à MongoDB échouée !'))
-
+require('dotenv').config()
+require('./bd/connect')
 const app = express()
 
 // Middleware appliqué à toutes les routes, permettant l'envoie de requête et d'accéder à l'API

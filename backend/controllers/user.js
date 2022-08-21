@@ -1,23 +1,21 @@
 const bcrypt = require('bcrypt') //bcrpyt permet un cryptage sécurisé
 const jwt = require('jsonwebtoken') //jwt permet l'échange sécurisé de jetons (tokens)
-const UserModels = require('../models/UserModels')
 const fs = require('fs')
 const auth = require('../middleware/auth')
+const UserModels = require('../models/UserModels')
 
 let userId = auth()
-
 let userModels = new UserModels()
 
 // Creation fonctions signup et login
 
 // Créer compte utilisateur
 
-exports.signup = (req, res, next) => {
+exports.signup = (req, res) => {
   const regexPasswordHard = /^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
-  // Regex verifie que le mot de passe remplise les conditions
   if (regexPasswordHard.test(req.body.password)) {
-    // bcrypt il va recuperer le mot de passe et il va le hacher autant de fois demandé 10
-    bcrypt
+    // Regex verifie que le mot de passe remplise les conditions
+    bcrypt // bcrypt il va recuperer le mot de passe et il va le hacher autant de fois demandé 10
       .hash(req.body.password, 10)
       .then((hash) => {
         const user = new UserModels({
@@ -66,23 +64,16 @@ exports.login = (req, res, next) => {
 
 // Permet de voir le profil
 exports.seeMyProfile = (req, res, next) => {
-  const token = req.headers.authorization.split(' ')[1]
-  const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET')
-  const userId = decodedToken.userId
-  let sqlInserts = [userId]
+  let myProfile = [userId]
   userModels
-    .seeMyProfile(sqlInserts)
-    .then((response) => {
-      res.status(200).json(JSON.stringify(response))
-    })
-    .catch((error) => {
-      console.log(error)
-      res.status(400).json(error)
-    })
+    .findOne(myProfile)
+    .then((response) => res.status(200).json({ message: 'Le Voila' }))
+    .catch((error) => res.status(404).json({ error }))
 }
 
 // Update User
 exports.updateUser = (req, res, next) => {
+  let myProfile = [userId]
   const userObject = req.file
     ? {
         ...JSON.parse(req.body.sauce), // Récupération de toutes les infos sur l'objet
@@ -92,18 +83,18 @@ exports.updateUser = (req, res, next) => {
       }
     : { ...req.body }
   userModels
-    .updateOne({ _id: req.params.id }, { ...userObject, _id: req.params.id })
+    .updateOne(myProfile, { ...userObject, _id: req.params.id })
     .then(() => res.status(200).json({ message: 'Utilisateur modifiée !' }))
     .catch((error) => res.status(400).json({ error }))
 }
 
 // Delete User
 exports.deleteUser = (req, res, next) => {
-  console.log('test')
+  let myProfile = [userId]
   userModels
-    .findOne({ _id: req.params.id })
-    .then((sauce) => {
-      const filename = sauce.imageUrl.split('/images/')[1]
+    .findOne(myProfile)
+    .then((profile) => {
+      const filename = profile.imageUrl.split('/images/')[1]
       fs.unlink(`images/${filename}`, () => {
         userModels
           .deleteOne({ _id: req.params.id })
@@ -117,10 +108,8 @@ exports.deleteUser = (req, res, next) => {
 }
 
 exports.deleteImage = (req, res, next) => {
-  // const token = req.headers.authorization.split(' ')[1]
-  // const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET')
-  // const userId = decodedToken.userId
-  userModels.seeMyProfile([userId]).then((user) => {
+  let myProfile = [userId]
+  userModels.deleteOne(myProfile).then((user) => {
     const filename = user[0].imageProfil
     fs.unlink(filename, () => console.log('ok'))
   })

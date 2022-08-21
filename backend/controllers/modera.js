@@ -1,5 +1,4 @@
 const Modera = require('../models/ModeraModels')
-const fs = require('fs')
 const jwt = require('jsonwebtoken')
 
 let moderaModels = new Modera()
@@ -9,8 +8,8 @@ exports.getAllPosts = (req, res, next) => {
   const token = req.headers.authorization.split(' ')[1]
   const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET')
   const mod = decodedToken.moderation
-  if (mod == 1) {
-    moderaModels.getAllPosts().then((response) => {
+  if (mod === 1) {
+    moderaModels.find().then((response) => {
       res.status(200).json(JSON.stringify(response))
     })
   } else {
@@ -23,8 +22,8 @@ exports.getAllComments = (req, res, next) => {
   const token = req.headers.authorization.split(' ')[1]
   const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET')
   const mod = decodedToken.moderation
-  if (mod == 1) {
-    moderaModels.getAllComments().then((response) => {
+  if (mod === 1) {
+    moderaModels.find().then((response) => {
       res.status(200).json(JSON.stringify(response))
     })
   } else {
@@ -37,10 +36,10 @@ exports.deleteComment = (req, res, next) => {
   const token = req.headers.authorization.split(' ')[1]
   const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET')
   const mod = decodedToken.moderation
-  if (mod == 1) {
+  if (mod === 1) {
     let commentId = req.params.id
-    let sqlInserts = [commentId]
-    moderaModels.deleteComment(sqlInserts).then((response) => {
+    let comment = [commentId]
+    moderaModels.deleteOne(comment).then((response) => {
       res.status(200).json(JSON.stringify(response))
     })
   } else {
@@ -55,8 +54,8 @@ exports.deletePost = (req, res, next) => {
   const mod = decodedToken.moderation
   if (mod === 1) {
     let postId = req.params.id
-    let sqlInserts = [postId]
-    moderaModels.deletePost(sqlInserts).then((response) => {
+    let post = [postId]
+    moderaModels.deleteOne(post).then((response) => {
       res.status(200).json(JSON.stringify(response))
     })
   } else {

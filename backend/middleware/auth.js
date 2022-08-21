@@ -10,11 +10,11 @@ module.exports = (req, res, next) => {
     if (req.body.userId && req.body.userId !== userId) {
       // Si il y a un userId avec la requette et que celui ci est different de userId; Alors Error
       // eslint-disable-next-line no-throw-literal
-      throw -'Invalid user ID'
+      throw 'Invalid user ID'
     } else {
       next()
     }
-  } catch (error) {
-    console.log(error.message)
+  } catch {
+    console.log({ message: 'Problem' })
   }
 }
