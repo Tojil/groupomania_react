@@ -9,7 +9,11 @@ const userSchema = mongoose.Schema({
   lastName: { type: String, required: false },
   firstName: { type: String, required: false },
   moderation: { type: Number, required: false },
-  imageProfil: { type: String, required: false },
+  imageProfil: {
+    type: String,
+    required: false,
+    default: '../images/profile.png',
+  },
 })
 // L'ajout de unique validator rend impossible d'avoir plusieurs utilisateurs inscrits avec la même adresse mail
 userSchema.plugin(uniqueValidator)
